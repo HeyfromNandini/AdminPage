@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1055081790867",
+    "project_id": "waste2wealth-v2",
+    "storage_bucket": "waste2wealth-v2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055081790867:android:b1bb445e0abb201ed17c66",
+        "android_client_info": {
+          "package_name": "enrich.waste.adminpage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRPEKLMu6Jx6NtB-iuReJM3UNzpb4x19c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
