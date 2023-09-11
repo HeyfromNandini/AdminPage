@@ -1,5 +1,9 @@
 package enrich.waste.adminpage.ui.theme
 
+import android.app.Activity
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -34,16 +38,21 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -57,113 +66,208 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.jet.firestore.JetFirestore
+import com.jet.firestore.getListOfObjects
+import enrich.waste.adminpage.R
+import enrich.waste.adminpage.datastore.UserDataStore
+import enrich.waste.adminpage.dto.Credentials
 import enrich.waste.adminpage.navigation.Screens
+import enrich.waste.adminpage.utils.Constants
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlin.system.exitProcess
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Adminhome(navHostController: NavHostController) {
 
-    var nameValue = remember { mutableStateOf("") }
-    var phoneValue = remember { mutableStateOf("") }
-    var passwordValue = remember { mutableStateOf("") }
+    var nameValue by remember { mutableStateOf("") }
+    var passwordValue by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var adminCredentials by remember { mutableStateOf<List<Credentials>?>(null) }
+    val context = LocalContext.current
+    val dataStore = UserDataStore(context = context)
+    val activity = (LocalContext.current as? Activity)
+    BackHandler {
+        activity?.finishAndRemoveTask()
+        exitProcess(0)
+    }
 
-        Column(modifier = Modifier.fillMaxSize()) {
-
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 40.dp), horizontalArrangement = Arrangement.Center) {
-              
-             TextBig(text = "Admin Page", size =  40.sp)
-                
+    LaunchedEffect(key1 = isLoading) {
+        delay(2000)
+        if (isLoading) {
+            if (nameValue.isNotEmpty() && passwordValue.isNotEmpty()) {
+                val correctUserName = adminCredentials?.find {
+                    it.username == nameValue.substringBefore(" ")
+                }
+                val correctPassword =
+                    adminCredentials?.find { it.password == passwordValue.substringBefore(" ") }
+                if (correctUserName != null && correctPassword != null) {
+                    isLoading = false
+                    runBlocking {
+                        dataStore.saveLogIn(true)
+                        navHostController.popBackStack()
+                        navHostController.navigate(Screens.CollectWaste.route)
+                    }
+                } else {
+                    isLoading = false
+                    Toast.makeText(context, "Enter Correct Value", Toast.LENGTH_SHORT)
+                        .show()
+                    dataStore.saveLogIn(false)
+                }
+            } else {
+                isLoading = false
+                Toast.makeText(context, "Enter Value Soon", Toast.LENGTH_SHORT)
+                    .show()
+                dataStore.saveLogIn(false)
             }
-            Row {
+        }
+    }
 
-                val compnotify by rememberLottieComposition(
-                    spec = LottieCompositionSpec.Asset("profile.json")
-                )
-                val progress by animateLottieCompositionAsState(compnotify)
-                LottieAnimation(
-                    composition = compnotify,
-                    iterations = Int.MAX_VALUE,
-                    isPlaying = true,
-                    contentScale = ContentScale.Crop,
-                    speed = 1.45f,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(45.dp)
-                        .padding(top = 170.dp, start = 50.dp, end = 50.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(100.dp))
+    JetFirestore(path = {
+        collection("AdminCredentials")
+    }, onRealtimeCollectionFetch = { values, _ ->
+        adminCredentials = values?.getListOfObjects()
+        adminCredentials?.forEach {
+            Log.i("LoginCredentials", "Adminhomesss Username: ${it.username}")
+            Log.i("LoginCredentials", "Adminhomesss Password: ${it.password}")
+        }
+    }) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
-                    .verticalScroll(
-                        rememberScrollState(),
-                        flingBehavior = ScrollableDefaults.flingBehavior()
-                    )
-                    .fillMaxWidth()
-                    .padding(top = 170.dp,),
-                verticalArrangement = Arrangement.Center,
-
+                    .fillMaxSize()
+                    .then(if (isLoading) Modifier.blur(10.dp) else Modifier)
             ) {
-                OutlinedText(value = nameValue.value , text = "Name" , Placeholder = "Name")
-                OutlinedText(value = phoneValue.value , text = "Phone Number" , Placeholder = "Phone Number")
-                OutlinedText(value = passwordValue.value , text = "Password" , Placeholder = "Password")
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 40.dp), horizontalArrangement = Arrangement.Center
+                ) {
+
+                    TextBig(text = "Admin Page", size = 40.sp)
+
+                }
+                Row {
+
+                    val compnotify by rememberLottieComposition(
+                        spec = LottieCompositionSpec.Asset("profile.json")
+                    )
+                    val progress by animateLottieCompositionAsState(compnotify)
+                    LottieAnimation(
+                        composition = compnotify,
+                        iterations = Int.MAX_VALUE,
+                        isPlaying = true,
+                        contentScale = ContentScale.Crop,
+                        speed = 1.45f,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .size(45.dp)
+                            .padding(top = 170.dp, start = 50.dp, end = 50.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(100.dp))
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(
+                            rememberScrollState(),
+                            flingBehavior = ScrollableDefaults.flingBehavior()
+                        )
+                        .fillMaxWidth()
+                        .padding(top = 170.dp),
+                    verticalArrangement = Arrangement.Center,
+
+                    ) {
+                    OutlinedText(
+                        value = nameValue,
+                        text = "Name",
+                        Placeholder = "Name"
+                    ) {
+                        nameValue = it
+                    }
+                    OutlinedText(
+                        value = passwordValue,
+                        text = "Password",
+                        Placeholder = "Password"
+                    ) {
+                        passwordValue = it
+                    }
+
+                }
+                CustomButtom(
+                    text = "SIGN IN",
+                    onClick = {
+                        Log.i("Adminhome", "Adminhomesss: $nameValue")
+                        Log.i("Adminhome", "Adminhomesss Pass: $passwordValue")
+                        isLoading = true
+                    }
+
+                )
 
             }
-
-            CustomButtom(text = "SIGN IN", onClick = { navHostController.navigate(route = Screens.CollectWaste.route)})
-
-
-
-
-            }}
+            if (isLoading) {
+                LoadingAnimation()
+            }
+        }
+    }
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OutlinedText(value: String, text: String, Placeholder: String) {
+fun OutlinedText(
+    value: String,
+    text: String,
+    Placeholder: String,
+    onValueChange: (String) -> Unit = {}
+) {
 
-    Row(modifier = Modifier.fillMaxWidth(),
+    Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically
+    ) {
 
-            OutlinedTextField(
-                value = value,
-                colors = TextFieldDefaults.textFieldColors(Color.White),
-                onValueChange = {
-//            value = itL
-                },
-                label = {
+        OutlinedTextField(
+            value = value,
+            colors = TextFieldDefaults.textFieldColors(Color.White),
+            onValueChange = {
+                onValueChange(it)
+            },
+            label = {
 
-                    Text(
-                        text = text,
-                        color = Color.Gray,
-                    )
-                },
-                placeholder = {
+                Text(
+                    text = text,
+                    color = Color.Gray,
+                )
+            },
+            placeholder = {
 
-                    Text(text = Placeholder, fontSize = 10.sp) },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .padding(start = 25.dp, end = 25.dp)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
+                Text(text = Placeholder, fontSize = 10.sp)
+            },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .padding(start = 25.dp, end = 25.dp)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
 
     }
 }
 
 @Composable
-fun CustomButtom(text: String, onClick: () -> Unit ) {
-    Row(modifier = Modifier.fillMaxWidth(),
+fun CustomButtom(text: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center) {
+        horizontalArrangement = Arrangement.Center
+    ) {
 
         Button(
             onClick = {
-                  onClick()
+                onClick()
             },
             modifier = Modifier.padding(all = 12.dp),
             enabled = true,
@@ -181,19 +285,19 @@ fun CustomButtom(text: String, onClick: () -> Unit ) {
 fun FixedButtom(text: String) {
 
 
-        Button(
-            onClick = {
-            },
-            modifier = Modifier
-                .padding(all = 12.dp)
-                .height(60.dp)
-                .width(140.dp),
-            enabled = true,
-            shape = MaterialTheme.shapes.medium
-        )
-        {
-            Text(text = text, color = Color.White)
-        }
+    Button(
+        onClick = {
+        },
+        modifier = Modifier
+            .padding(all = 12.dp)
+            .height(60.dp)
+            .width(140.dp),
+        enabled = true,
+        shape = MaterialTheme.shapes.medium
+    )
+    {
+        Text(text = text, color = Color.White)
+    }
 }
 
 @Composable
@@ -207,27 +311,75 @@ fun CoinButtom(text: String) {
         enabled = true,
     )
     {
-        CoinText(text = text, modifier = Modifier
-            .padding(start = 1.dp, top = 5.dp, end = 5.dp)
-            .size(20.dp), textmodifier = Modifier)
+        CoinText(
+            text = text,
+            modifier = Modifier
+                .padding(start = 1.dp, top = 5.dp, end = 5.dp)
+                .size(20.dp),
+            textmodifier = Modifier,
+            icon = R.drawable.coins
+        )
     }
 
 }
 
 @Composable
-fun CoinText(text: String, modifier:Modifier , textmodifier: Modifier) {
+fun CoinText(
+    text: String,
+    modifier: Modifier,
+    textmodifier: Modifier,
+    icon: Int,
+    textSize: TextUnit = 10.sp,
+    iconSize: Dp = 20.dp
+) {
 
-    Icon(imageVector = Icons.Filled.AccountCircle,
-        contentDescription = "",
-        tint =  Color.Black ,
-        modifier = modifier
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            painterResource(id = icon),
+            contentDescription = "",
+            tint = Color.Unspecified,
+            modifier = modifier.size(iconSize)
 
-    )
-    Text(text = text, color = Color.White, modifier=textmodifier)
+        )
+        Spacer(modifier = Modifier.width(5.dp))
+        Text(
+            text = text,
+            color = Color.White,
+            modifier = textmodifier,
+            fontSize = textSize,
+            softWrap = true
+        )
+    }
 }
 
 @Composable
 fun TextBig(text: String, size: TextUnit) {
-    Text(text = text , fontSize = size, fontWeight = FontWeight.SemiBold, color = Color.White , )
+    Text(text = text, fontSize = size, fontWeight = FontWeight.SemiBold, color = Color.White)
 }
 
+
+@Composable
+fun LoadingAnimation() {
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+
+        val compnotify by rememberLottieComposition(
+            spec = LottieCompositionSpec.Asset("loading.json")
+        )
+        val progress by animateLottieCompositionAsState(compnotify)
+        LottieAnimation(
+            composition = compnotify,
+            iterations = Int.MAX_VALUE,
+            isPlaying = true,
+            contentScale = ContentScale.Crop,
+            speed = 1.45f,
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(45.dp)
+
+        )
+    }
+}

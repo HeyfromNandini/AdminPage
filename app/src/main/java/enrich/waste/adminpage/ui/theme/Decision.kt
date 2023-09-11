@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
@@ -37,39 +38,58 @@ import enrich.waste.adminpage.navigation.Screens
 fun Decision(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
 
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp)) {
-            Icon(imageVector = Icons.Filled.KeyboardArrowLeft,
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.KeyboardArrowLeft,
                 contentDescription = "",
-                tint =  Color.White ,
+                tint = Color.White,
                 modifier = Modifier
-                    .padding(start = 5.dp,)
+                    .padding(start = 5.dp)
                     .size(35.dp)
             )
             Spacer(modifier = Modifier.width(20.dp))
             TextBig(text = "Reported Waste", size = 23.sp)
         }
 
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp, start = 25.dp, end = 25.dp)) {
-            Card (modifier = Modifier
+        Row(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 5.dp)) {
-                Row {
-                    Icon(
-                        imageVector = Icons.Filled.LocationOn,
-                        contentDescription = "",
-                        tint = Color.Black,
-                        modifier = Modifier
-                            .padding(start = 15.dp, top = 15.dp)
-                            .size(25.dp)
+                .padding(top = 20.dp, start = 25.dp, end = 25.dp)
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 20.dp), Arrangement.SpaceBetween
+                ) {
+                    Row {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = "",
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .padding(start = 15.dp, top = 15.dp)
+                                .size(25.dp)
+                        )
+                        Text(text = "Person", modifier = Modifier.padding(15.dp))
+                    }
+
+                    CoinText(
+                        text = "100",
+                        modifier = Modifier.padding(top = 15.dp, start = 80.dp),
+                        textmodifier = Modifier.padding(top = 15.dp),
+                        icon = R.drawable.coins,
+                        textSize = 18.sp
                     )
-                    Text(text = "Location 1", modifier = Modifier.padding(15.dp))
-                    
-                    CoinText(text = "100", modifier = Modifier.padding(top = 15.dp, start = 80.dp), textmodifier = Modifier.padding(top = 15.dp))
-                    
+                    Spacer(modifier = Modifier.height(10.dp))
 
                 }
 
@@ -89,9 +109,11 @@ fun Decision(navController: NavController) {
                 }
 
                 Spacer(modifier = Modifier.width(15.dp))
-                Row(modifier = Modifier.fillMaxWidth(),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically) {
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         text = "Sies djgybdeskug ukgfjenhgfubd uhhujhf,kdzrhfb huiuehfb",
                         modifier = Modifier
@@ -99,29 +121,35 @@ fun Decision(navController: NavController) {
                             .wrapContentWidth(Alignment.CenterHorizontally)
                     )
                 }
-                
-                CustomButtom(text = "See Info", onClick = { navController.navigate(route = Screens.Decision.route)})
+
+                CustomButtom(
+                    text = "See Info",
+                    onClick = { navController.navigate(route = Screens.Decision.route) })
 
             }
         }
 
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 30.dp, start = 15.dp, end = 15.dp),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 30.dp, start = 15.dp, end = 15.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center) {
-            
+            horizontalArrangement = Arrangement.Center
+        ) {
+
             CoinButtom(text = "50")
             CoinButtom(text = "100")
             CoinButtom(text = "-100")
         }
-        
 
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 30.dp),
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 30.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center) {
+            horizontalArrangement = Arrangement.Center
+        ) {
 
             FixedButtom(text = "Reported Successfully")
             FixedButtom(text = " Wrong Waste")
