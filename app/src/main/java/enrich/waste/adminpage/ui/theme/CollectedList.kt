@@ -1,11 +1,6 @@
 package enrich.waste.adminpage.ui.theme
 
-import android.app.Activity
-import android.content.Intent
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,17 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,28 +25,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import enrich.waste.adminpage.R
 import enrich.waste.adminpage.navigation.Screens
-import kotlin.system.exitProcess
 
 @Composable
-fun CollectWasteInfo(navController: NavController) {
+fun CollectedList(navController: NavController) {
 
-    val activity = (LocalContext.current as? Activity)
-    BackHandler {
-        activity?.finishAndRemoveTask()
-        exitProcess(0)
-    }
     Column(modifier = Modifier.fillMaxSize()) {
 
-        MainHeading(text = "Reported Waste")
+        MainHeading(text = "Collected Waste")
 
         Row(modifier = Modifier.fillMaxWidth()) {
 
@@ -111,14 +91,15 @@ fun CollectWasteInfo(navController: NavController) {
                                 Image(
                                     painter = painterResource(id = R.drawable.img),
                                     contentDescription = "",
-                                    modifier = Modifier.clip(RoundedCornerShape(15.dp))
+                                    modifier = Modifier.clip(
+                                        RoundedCornerShape(15.dp)
+                                    )
                                 )
                                 Spacer(modifier = Modifier.width(15.dp))
                                 Text(text = "Sies djgybdeskug ukgfjenhgfubd uhhujhf,kdzrhfb huiuehfb")
                             }
 
 
-                            Row(modifier = Modifier.fillMaxWidth(),Arrangement.SpaceEvenly) {
 
                                 CustomButton(
                                     text = "See Info",
@@ -126,10 +107,8 @@ fun CollectWasteInfo(navController: NavController) {
                                         navController.navigate(route = Screens.Decision.route)
                                     }
                                 )
-                                Tags(text = "Biodegradable") {
 
-                                }
-                            }
+
 
 
                         }
@@ -139,78 +118,9 @@ fun CollectWasteInfo(navController: NavController) {
 
                 }
             }
+
+
         }
-    }
-}
 
-
-@Composable
-fun MainHeading(text: String) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Filled.KeyboardArrowLeft,
-            contentDescription = "",
-            tint = Color.White,
-            modifier = Modifier
-                .padding(start = 5.dp)
-                .size(35.dp)
-        )
-        Spacer(modifier = Modifier.width(20.dp))
-        TextBig(text = text, size = 23.sp)
-    }
-}
-
-
-@Composable
-fun CustomButton(text: String, onClick: () -> Unit) {
-
-
-    Row(modifier = Modifier.padding(10.dp), horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically) {
-        androidx.compose.material3.Button(
-            onClick = {
-                onClick()
-            },
-            modifier = Modifier.padding(all = 12.dp),
-            enabled = true,
-            shape = MaterialTheme.shapes.medium
-        )
-        {
-            Text(text = text, color = Color.White)
-        }
-    }
-
-}
-
-
-@Composable
-fun Tags(text: String, onClick: () -> Unit) {
-
-    Row(
-        modifier = Modifier
-            .height(70.dp)
-            .padding(top = 25.dp, bottom = 10.dp,),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-
-        androidx.compose.material3.Button(
-            onClick = {
-                onClick()
-            },
-            modifier = Modifier.padding(1.dp),
-            enabled = true,
-            shape = MaterialTheme.shapes.small,
-            colors = ButtonDefaults.buttonColors(Color.Red)
-        )
-        {
-            Text(text = text, color = Color.White)
-        }
     }
 }

@@ -19,7 +19,9 @@ import enrich.waste.adminpage.MainViewModel
 import enrich.waste.adminpage.SplashScreen
 import enrich.waste.adminpage.datastore.UserDataStore
 import enrich.waste.adminpage.ui.theme.Adminhome
+import enrich.waste.adminpage.ui.theme.CollectVerification
 import enrich.waste.adminpage.ui.theme.CollectWasteInfo
+import enrich.waste.adminpage.ui.theme.CollectedList
 import enrich.waste.adminpage.ui.theme.Decision
 import kotlinx.coroutines.flow.collectLatest
 
@@ -70,6 +72,16 @@ fun MainNavController(mainViewModel: MainViewModel) {
         composable(Screens.Decision.route) {
             Decision(navController = navHostController)
         }
+
+        composable(Screens.CollectedList.route) {
+            CollectedList(navController = navHostController)
+        }
+
+        composable(Screens.CollectVerification.route) {
+            CollectVerification(navController = navHostController)
+        }
+
+
 
 
     }

@@ -196,7 +196,7 @@ fun Adminhome(navHostController: NavHostController) {
                     }
 
                 }
-                CustomButtom(
+                CustomButton(
                     text = "SIGN IN",
                     onClick = {
                         Log.i("Adminhome", "Adminhomesss: $nameValue")
@@ -257,32 +257,10 @@ fun OutlinedText(
     }
 }
 
-@Composable
-fun CustomButtom(text: String, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
 
-        Button(
-            onClick = {
-                onClick()
-            },
-            modifier = Modifier.padding(all = 12.dp),
-            enabled = true,
-            shape = MaterialTheme.shapes.medium
-        )
-        {
-            Text(text = text, color = Color.White)
-        }
-
-    }
-
-}
 
 @Composable
-fun FixedButtom(text: String) {
+fun Button(text: String) {
 
 
     Button(
@@ -301,7 +279,7 @@ fun FixedButtom(text: String) {
 }
 
 @Composable
-fun CoinButtom(text: String) {
+fun CoinButton(text: String) {
     Button(
         onClick = {
         },
