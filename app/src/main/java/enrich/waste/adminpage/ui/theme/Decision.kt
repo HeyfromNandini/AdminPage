@@ -2,6 +2,7 @@ package enrich.waste.adminpage.ui.theme
 
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -104,6 +105,17 @@ fun Decision(navController: NavController, mainViewModel: MainViewModel) {
     }
     val choosePoints = remember {
         mutableStateOf(0)
+    }
+
+    BackHandler {
+        mainViewModel.userEmail.value = null
+        mainViewModel.address.value = null
+        mainViewModel.latitude.value = null
+        mainViewModel.longitude.value = null
+        mainViewModel.imagePath.value = null
+        mainViewModel.timeStamp.value = null
+        mainViewModel.tag.value = null
+        navController.popBackStack()
     }
 
     JetFirestore(path = {
