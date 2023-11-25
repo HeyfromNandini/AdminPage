@@ -22,6 +22,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var longitude: MutableState<Double?> = mutableStateOf(null)
     var timeStamp: MutableState<Long?> = mutableStateOf(null)
     var imagePath: MutableState<String?> = mutableStateOf(null)
+    var collectedImagePath: MutableState<String?> = mutableStateOf(null)
     var tag: MutableState<List<TagWithoutTips>?> = mutableStateOf(null)
     var address: MutableState<String?> = mutableStateOf(null)
 

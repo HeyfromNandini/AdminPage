@@ -12,10 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import enrich.waste.adminpage.navigation.MainNavController
+import enrich.waste.adminpage.navigation.Screens
 import enrich.waste.adminpage.ui.theme.AdminPageTheme
 import enrich.waste.adminpage.ui.theme.Adminhome
+import enrich.waste.adminpage.ui.theme.AfterCollectWaste
 import enrich.waste.adminpage.ui.theme.CollectWasteInfo
+import enrich.waste.adminpage.ui.theme.CollectedWasteDecision
 import enrich.waste.adminpage.ui.theme.Decision
 
 class MainActivity : ComponentActivity() {
@@ -31,7 +37,25 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                  MainNavController(mainViewModel)
+
+                    val navHostController = rememberNavController()
+                    NavHost(
+                        navController = navHostController,
+                        startDestination = Screens.AfterCollectedWaste.route,
+                        ) {
+                        composable(Screens.AfterCollectedWaste.route) {
+                            AfterCollectWaste(navController = navHostController, mainViewModel = mainViewModel)
+                        }
+
+                        composable(Screens.AfterCollectedDecision.route) {
+                            CollectedWasteDecision(
+                                navController = navHostController,
+                                mainViewModel = mainViewModel
+                            )
+                        }
+                    }
+
+//                  MainNavController(mainViewModel)
 
 //          Decision()
                 }
