@@ -69,7 +69,7 @@ fun CollectWasteInfo(navController: NavController, mainViewModel: MainViewModel)
     var allWastes by remember { mutableStateOf<List<WasteItem>?>(null) }
 
     JetFirestore(path = {
-        collection("AllWastes")
+        collection("TempAllWastes")
     }, onRealtimeCollectionFetch = { values, _ ->
         allWastes = values?.getListOfObjects()
     }) {
@@ -157,6 +157,7 @@ fun CollectWasteInfo(navController: NavController, mainViewModel: MainViewModel)
                                         mainViewModel.longitude.value = listItem.longitude
                                         mainViewModel.imagePath.value = listItem.imagePath
                                         mainViewModel.timeStamp.value = listItem.timeStamp
+                                        mainViewModel.tag.value = listItem.tag
                                         navController.navigate(route = Screens.Decision.route)
                                     }
                                 )

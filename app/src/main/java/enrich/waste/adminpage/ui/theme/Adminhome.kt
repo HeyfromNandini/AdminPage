@@ -282,11 +282,15 @@ fun CustomButtom(text: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun FixedButtom(text: String) {
+fun FixedButtom(
+    text: String,
+    onClick: () -> Unit = {},
+) {
 
 
     Button(
         onClick = {
+            onClick()
         },
         modifier = Modifier
             .padding(all = 12.dp)
@@ -301,9 +305,10 @@ fun FixedButtom(text: String) {
 }
 
 @Composable
-fun CoinButtom(text: String) {
+fun CoinButtom(text: String, onClick: () -> Unit = {}) {
     Button(
         onClick = {
+                  onClick()
         },
         modifier = Modifier
             .clip(RoundedCornerShape(100.dp))

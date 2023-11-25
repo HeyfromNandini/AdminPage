@@ -83,3 +83,33 @@ data class Tag(
         image = image
     )
 }
+
+data class ProfileInfo(
+    val name: String?,
+    val email: String?,
+    val phoneNumber: String?,
+    val gender: String?,
+    val organization: String?,
+    val address: String?,
+    val pointsEarned: Int,
+    val pointsRedeemed: Int,
+    val noOfTimesReported: Int = 0,
+    val noOfTimesCollected: Int = 0,
+    val noOfTimesActivity: Int = 0,
+    val communities: List<String> = emptyList()
+) {
+    constructor() : this(
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        0,
+        0,
+        0,
+        0,
+        0,
+        emptyList()
+    )
+}
