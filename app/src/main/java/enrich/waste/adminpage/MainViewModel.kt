@@ -15,6 +15,13 @@ import kotlinx.coroutines.launch
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var isLoggedIn: MutableState<Boolean> = mutableStateOf(false)
+    var userEmail: MutableState<String?> = mutableStateOf(null)
+    var latitude: MutableState<Double?> = mutableStateOf(null)
+    var longitude: MutableState<Double?> = mutableStateOf(null)
+    var timeStamp: MutableState<Long?> = mutableStateOf(null)
+    var imagePath: MutableState<String?> = mutableStateOf(null)
+    var tag: MutableState<String?> = mutableStateOf(null)
+    var address: MutableState<String?> = mutableStateOf(null)
 
     init {
         val dataStore = UserDataStore(application.applicationContext)

@@ -64,11 +64,11 @@ fun MainNavController(mainViewModel: MainViewModel) {
         }
 
         composable(Screens.CollectWaste.route) {
-            CollectWasteInfo(navHostController)
+            CollectWasteInfo(navHostController, mainViewModel = mainViewModel)
         }
 
         composable(Screens.Decision.route) {
-            Decision(navController = navHostController)
+            Decision(navController = navHostController, mainViewModel = mainViewModel)
         }
 
 

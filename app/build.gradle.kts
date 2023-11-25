@@ -81,6 +81,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx:20.2.1")
     implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
     implementation("com.google.firebase:firebase-firestore-ktx:24.7.1")
+    implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("com.github.raipankaj:JetFirestore:1.0.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     testImplementation("junit:junit:4.13.2")

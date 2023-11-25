@@ -23,6 +23,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,12 +36,37 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import enrich.waste.adminpage.MainViewModel
 import enrich.waste.adminpage.R
 import enrich.waste.adminpage.navigation.Screens
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
-fun Decision(navController: NavController) {
+fun Decision(navController: NavController, mainViewModel: MainViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
+
+
+
+        var imageUrlState by remember {
+            mutableStateOf("")
+        }
+        LaunchedEffect(key1 = Unit) {
+            val imageUrl = withContext(Dispatchers.IO) {
+                try {
+                    getDownloadUrlFromPath(mainViewModel.imagePath.value ?: "")
+                } catch (e: Exception) {
+                    e.printStackTrace().toString()
+                }
+            }
+            println("imageUrlStates: $imageUrl")
+            imageUrlState = imageUrl
+        }
+
+        println("imageUrlState: $imageUrlState")
+
+
 
         Row(
             modifier = Modifier
@@ -79,7 +109,7 @@ fun Decision(navController: NavController) {
                                 .padding(start = 15.dp, top = 15.dp)
                                 .size(25.dp)
                         )
-                        Text(text = "Person", modifier = Modifier.padding(15.dp))
+                        Text(text = mainViewModel.userEmail.value ?: "", modifier = Modifier.padding(15.dp))
                     }
 
                     CoinText(
@@ -98,14 +128,17 @@ fun Decision(navController: NavController) {
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.img),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    )
+                    if (imageUrlState != "") {
+                        AsyncImage(
+                            model = imageUrlState,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp)
+                                .padding(bottom = 30.dp)
+                                .clip(RoundedCornerShape(30.dp)),
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(15.dp))
@@ -115,7 +148,7 @@ fun Decision(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Sies djgybdeskug ukgfjenhgfubd uhhujhf,kdzrhfb huiuehfb",
+                        text = mainViewModel.address.value ?: "",
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.CenterHorizontally)
